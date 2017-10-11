@@ -2,14 +2,11 @@
 title: API Reference
 
 language_tabs: # must be one of https://git.io/vQNgJ
-  - shell
-  - ruby
-  - python
-  - javascript
+  - shell: cURL
 
 toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='https://github.com/tripit/slate'>Documentation Powered by Slate</a>
+  - <a href='https://www.fidcar.com'>FIDCAR</a>
+  - <a href='https://www.fidcar.com/fr/pro/group/tool/api'>Get your API key</a>
 
 includes:
   - errors
@@ -19,221 +16,523 @@ search: true
 
 # Introduction
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
-
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](https://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+The FIDCAR API is organized around [REST](https://en.wikipedia.org/wiki/Representational_state_transfer). Our API has predictable, resource-oriented URLs, and uses HTTP response codes to indicate API errors. We use built-in HTTP features, like HTTP authentication and HTTP verbs, which are understood by off-the-shelf HTTP clients. [JSON](http://www.json.org/) is returned by all API responses, including errors
 
 # Authentication
 
 > To authorize, use this code:
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
 
 ```shell
 # With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
+curl "https://www.fidcar.com/api/"
+  -H "Authorization: [api_key]"
 ```
 
-```javascript
-const kittn = require('kittn');
+> Make sure to replace `[api_key]` with your API key.
 
-let api = kittn.authorize('meowmeowmeow');
-```
+FIDCAR API use  keys to allow access to the API. You can retrieve your API key at our [Tools Page](https://www.fidcar.com/fr/pro/group/tool/api).
 
-> Make sure to replace `meowmeowmeow` with your API key.
+FIDCAR expects for the API key to be included in all API requests to the server in a header that looks like the following:
 
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
+`Authorization: [api_key]`
 
 <aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
+You must replace <code>api_key</code> with your personal API key.
 </aside>
 
-# Kittens
+# Pagination
 
-## Get All Kittens
+All ressources havesupport for bulk fetches via "list" API methods. For instance, you can [list dealerships](#list-all-the-dealerships). These list API methods share a common structure, taking at least these two parameters : `page` and `limit`.
 
-```ruby
-require 'kittn'
+## Query Parameters
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
 
 ```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
+curl "https://www.fidcar.com/api/local?page=3&limit=5"
+  -H "Authorization: [api_key]"
 ```
 
-```javascript
-const kittn = require('kittn');
+> Make sure to replace `[api_key]` with your API key.
 
-let api = kittn.authorize('meowmeowmeow');
-let kittens = api.kittens.get();
+
+Parameter | Default | Description
+----------|---------|-------------
+`page` | 1 | The cursor used in pagination (optional).
+`limit` | 10 | A limit on the number of objects to be returned, between 1 and 100 (optional).
+
+## List Response Format
+
+```js
+{
+  "page": 3,
+  "limit": 5,
+  "total": 25,
+  "data": [
+    object,
+    object,
+    object,
+    object,
+    object
+  ]
+}
 ```
 
-> The above command returns JSON structured like this:
+Key | Description
+----|-------------
+`page` | Pagination Cursor
+`limit` | Pagination Limit
+`total` | Total Count of objects
+`data` | Array of paginated objects
 
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Max",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
+# Dealership
+
+```js
+{
+    "id": 1325,
+    "publicKey": "4a5bc929b3a8a2a23cca0ba5985dazzd3",
+    "title": "Garage Automobiles du Nord",
+    "street": "13 rue du Général Leclerc",
+    "zipcode": "78310",
+    "city": "Villerain sur Seine",
+    "country": "FR",
+    "coords": [
+        "48.26900",
+        "-1.11800"
+    ],
+    "phone": "01 69 65 24 02",
+    "website": "http://www.garage-automobile-du-nord.fr/",
+    "siret": "81426458802142",
+    "grade": "9.40",
+    "url": "https://www.fidcar.dev/app_dev.php/fr/local/1325/garage-automobile-du-nord",
+    "reviews": 231,
+    "social": {
+        "facebook": "6.70",
+        "google": "7.90",
+        "pagesjaunes": false
+    },
+    "bridge": bridge // Bridge object
+}
 ```
 
-This endpoint retrieves all kittens.
+This object represent a dealership assigned to your account.
+
+Key | Type | Description
+----------|------|-------------
+`id` | integer | Unique identifier for the object.
+`publicKey` | string | The dealership public key. Used to call the widget.
+`title` | string | The dealership title.
+`street` | string | The dealership street name in the postal Adresse
+`city` | string | The city where the dealership is located
+`zipcode` | string | The city zipcode
+`country` | string | The country code (2 caracters like `FR`, `EN`, `IT` or `BE`)
+`coords` | array | The dealership geolocalisation : `[latitude, longitude]`
+`phone` | string | The nationaly formatted dealership phone number.
+`url` | string | The dealership website URL
+`reviews` | integer | The number of customer reviews of the dealership
+`social` | object | The social media grades.
+`bridge` | object | The dealership [Bridge object](#bridge) (optional)
+
+## List the dealerships
+
+You can list and filter all the `local` objects assigned to your account.
+
+```shell
+curl "https://www.fidcar.com/api/local?page=1&limit=5&bridge=icar"
+  -H "Authorization: [api_key]"
+```
+
+> Make sure to replace `[api_key]` with your API key.
 
 ### HTTP Request
 
-`GET http://example.com/api/kittens`
+`GET https://www.fidcar.com/api/local`
 
 ### Query Parameters
 
 Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
+----------|---------|-------------
+`page` | 1 | The cursor used in the pagination (optional)
+`limit` | 10 | A limit on the number of `local` object to be returned, between 1 and 100 (optional)
+`siret` | | Filter by the SIRET number of the dealership (optional)
+`bridge` | | Filter by the `code` parameter of the dealership [`bridge` object](#bridge) (optional).
 
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
+### Response
+
+The API answer with a [`Pagination` object](#pagination) containing an array of [`local` object](#dealership) in `data`.
+
+## Get a dealership
+
+Get the details of one of your dealership.
+
+### HTTP Request
+
+```shell
+curl "https://www.fidcar.com/api/local/[local_id]"
+  -H "Authorization: [api_key]"
+```
+
+> Make sure to replace `[api_key]` with your API key and `[local_id]` by the dealership unique identifier.
+
+`GET https://www.fidcar.com/api/local/[local_id]`
+
+<aside class="notice">
+You must replace <code>[local_id]</code> with the dealership unique identifier <code>id</code>.
 </aside>
 
-## Get a Specific Kitten
+### Response
 
-```ruby
-require 'kittn'
+The API answer with the [`local` object](#dealership) asked. 
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
+# Contact
 
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-```javascript
-const kittn = require('kittn');
-
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.get(2);
-```
-
-> The above command returns JSON structured like this:
-
-```json
+```js
 {
-  "id": 2,
-  "name": "Max",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+    "id": "d57c6ec6-4ebd-4a01-a6fd-9771638424c9",
+    "user": user, // Object user
+    "service": "sav",
+    "datetime": "2017-10-10 18:00:30",
+    "review": review, // Object review
+    "communication": [
+        communication, // Object communication
+        communication, // Object communication
+        communication, // Object communication
+        communication // Object communication
+    ],
+    "brand": 'Volvo',
+    "model": 'XC 60',
+    "seller": 'Quentin Porcet'
 }
 ```
 
-This endpoint retrieves a specific kitten.
+This object represent a Contact assigned to one of your Dealership.
 
-<aside class="warning">Inside HTML code blocks like this one, you can't use Markdown, so use <code>&lt;code&gt;</code> blocks to denote code.</aside>
+Key | Type | Description
+----------|------|-------------
+`id` | string | Contact Unique Identifier
+`user` | object | The contact personal information, an [`user`](#user) object
+`service` | string | The code of the service used by the contact (optional).
+`datetime` | string | The date and time of the purchase in the dealership or the creation of the contact.
+`review` | string | The review writed by the contact about your dealership, an [`review`](#review) object (optional).
+`communication` | array | An array of [`communication`](#communication) object.
+`brand` | string | The brand of his car (optional).
+`model` | string | The model of his car (optional).
+`seller` | string | The name of his seller (optional)
+
+The differents services are :
+
+Service | Description
+--------|-------------
+vo | Purchase of used car
+vn | Purchase of new car
+sav | After sales service
+rent | Rent service
+
+## List the contact
+
+You can list and filter all the `contact` objects assigned to one of your dealership.
+
+```shell
+curl "https://www.fidcar.com/api/local/[local_id]/contact?page=1&limit=5"
+  -H "Authorization: [api_key]"
+```
+
+> Make sure to replace `[api_key]` with your API key and `[local_id]` with the dealership unique identifier.
 
 ### HTTP Request
 
-`GET http://example.com/kittens/<ID>`
+`GET https://www.fidcar.com/api/local/[local_id]/contact`
 
-### URL Parameters
+<aside class="notice">
+You must replace <code>[local_id]</code> with the dealership unique identifier <code>id</code>.
+</aside>
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+### Query Parameters
 
-## Delete a Specific Kitten
+Parameter | Default | Description
+----------|---------|-------------
+`page` | 1 | The cursor used in the pagination (optional).
+`limit` | 10 | A limit on the number of `contact` object to be returned, between 1 and 100 (optional).
+`name` | | Filter by the contact fullname (optional).
+`firstname` | | Filter by the contact `user` firstname (optional).
+`lastname` | | Filter by the contact `user` lastname (optional).
+`email` | | Filter by the contact `user` email (optional).
+`phone` | | Filter by the contact `user` phone (optional).
+`start` | | Filter by the date of purchase after `start` (YYYY-MM-DD) (optional).
+`end` | | Filter by the date of purchase before `end` (YYYY-MM-DD) (optional).
+`grade` | | Filter by the grade of the contact `review`. You can use an integer like `8` for filtering by all the `review` graded 8/10, filter with `>6` for filtering all the `review` graded strictely better than 6/10, or filter with `<7` for filtering all the `review` graded strictely worst than 7/10. (optional). 
 
-```ruby
-require 'kittn'
+### Response
 
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.delete(2)
-```
+The API answer with a [`Pagination` object](#pagination) containing an array of [`contact` object](#contact) in `data`.
 
-```python
-import kittn
+## Add a new contact
 
-api = kittn.authorize('meowmeowmeow')
-api.kittens.delete(2)
-```
+You can add a new `contact` object to one of your dealership. This will trigger the FIDCAR processus by creating `communication` object as planning in the dealership configuration.
 
 ```shell
-curl "http://example.com/api/kittens/2"
-  -X DELETE
-  -H "Authorization: meowmeowmeow"
+curl "https://www.fidcar.com/api/local/[local_id]/contact"
+  -H "Authorization: [api_key]"
+  -F firstname=Thibault
+  -F lastname=Henry
+  -F email=thibault@fidcar.com
+  -F phone=0672391759
+  -F service=sav
 ```
 
-```javascript
-const kittn = require('kittn');
+> Make sure to replace `[api_key]` with your API key and `[local_id]` with the dealership unique identifier.
 
-let api = kittn.authorize('meowmeowmeow');
-let max = api.kittens.delete(2);
-```
+### HTTP Request
 
-> The above command returns JSON structured like this:
+`POST https://www.fidcar.com/api/local/[local_id]/contact`
 
-```json
+<aside class="notice">
+You must replace <code>[local_id]</code> with the dealership unique identifier <code>id</code>.
+</aside>
+
+### Query Parameters
+
+Parameter | Default | Description
+----------|---------|-------------
+`firstname` | | The contact firstname.
+`lastname` | | Filter by the contact lastname.
+`email` | | The contact email.
+`phone` | | The contact phone (optional).
+`service` | | The name of the service used by the contact (optional).
+
+### Response
+
+The API answer with the new [`contact`](#contact) object created.
+
+# Review
+
+```js
 {
-  "id": 2,
-  "deleted" : ":("
+    "id": "d57c6ec6-4ebd-4a01-a6fd-9771638424c9",
+    "user": user, // Object user
+    "datetime": "2017-10-10 18:00:30",
+    "service": "sav",
+    "grade": 10,
+    "comment": "Personel agréable et compétent",
+    "survey": {
+        "Accueil": 10,
+        "Explications": 10,
+        "Essai": 1,
+        "Livraison": 8
+    },
+    "answer": answer, // answer object
+    "status": "published"
 }
 ```
 
-This endpoint retrieves a specific kitten.
+This object represent a Review submitted about one of your Dealership.
+
+Key | Type | Description
+----------|------|-------------
+`id` | string | Review Unique Identifier.
+`user` | object | The [`user`](#user) object who posted the review.
+`datetime` | string | The date and time of the review.
+`service` | string | The code of the service used by the contact.
+`grade` | int | The grade of the review (from 1 to 10).
+`comment` | string | The content of the review.
+`survey` | object | The list of additionnal appreciations the user graded (optional).
+`answer` | object | The [`answer`](#answer) object (optional).
+`status` | string | Always "`published`".
+
+## List the reviews
+
+You can list and filter the `review` objects assigned to one of your dealership.
+
+```shell
+curl "https://www.fidcar.com/api/review?page=1&limit=5"
+  -H "Authorization: [api_key]"
+```
+
+> Make sure to replace `[api_key]` with your API key.
 
 ### HTTP Request
 
-`DELETE http://example.com/kittens/<ID>`
+`GET https://www.fidcar.com/api/review`
 
-### URL Parameters
+<aside class="notice">
+You must replace <code>[local_id]</code> with the dealership unique identifier <code>id</code>.
+</aside>
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to delete
+### Query Parameters
 
+Parameter | Default | Description
+----------|---------|-------------
+`page` | 1 | The cursor used in the pagination (optional)
+`limit` | 10 | A limit on the number of `review` object to be returned, between 1 and 100 (optional)
+`local` | | Filter by the the `local` unique identifier (optional).
+
+### Response
+
+The API answer with a [`Pagination` object](#pagination) containing an array of [`review` object](#review) in `data`.
+
+## Get a review
+
+Get the details of one of your review.
+
+### HTTP Request
+
+```shell
+curl "https://www.fidcar.com/api/review/[review_id]"
+  -H "Authorization: [api_key]"
+```
+
+> Make sure to replace `[api_key]` with your API key and `[review_id]` by the review unique identifier.
+
+`GET https://www.fidcar.com/api/local/[local_id]`
+
+<aside class="notice">
+You must replace <code>[review_id]</code> with the review unique identifier <code>id</code>.
+</aside>
+
+### Response
+
+The API answer with the [`review` object](#review) asked. 
+
+# Lead
+
+
+```js
+{
+    "review":review, // review object
+    "type": "Neuf",
+    "brand": "Volvo",
+    "model": "XC60",
+    "delay": "6 mois"
+}
+```
+
+This object represent a lead assigned to one of your Dealership.
+
+Key | Type | Description
+----------|------|-------------
+`review` | object | The [`review`](#review) object.
+`type` | string | Type of the lead "new" or "used", in the dealership langage.
+`brand` | string | The car brand wanted by the contact (optional).
+`model` | string | The car model wanted by the contact (optional).
+`delay` | string | The delay wanted by the contact (in the dealership langage) (optional).
+
+## List the leads
+
+You can list and filter all the `lead` objects assigned to one of your dealership.
+
+```shell
+curl "https://www.fidcar.com/api/local/[local_id]/lead?page=1&limit=5"
+  -H "Authorization: [api_key]"
+```
+
+> Make sure to replace `[api_key]` with your API key and `[local_id]` with the dealership unique identifier.
+
+### HTTP Request
+
+`GET https://www.fidcar.com/api/local/[local_id]/lead`
+
+<aside class="notice">
+You must replace <code>[local_id]</code> with the dealership unique identifier <code>id</code>.
+</aside>
+
+### Query Parameters
+
+Parameter | Default | Description
+----------|---------|-------------
+`page` | 1 | The cursor used in the pagination (optional).
+`limit` | 10 | A limit on the number of `contact` object to be returned, between 1 and 100 (optional).
+`type` | | Filter by Type of the lead "new" or "used", in the dealership langage (optional)
+
+### Response
+
+The API answer with a [`Pagination` object](#pagination) containing an array of [`lead` object](#contact) in `data`.
+
+# Other
+
+Some objects don't have any method, but they can appear in other object as a dependency.
+
+## Answer
+
+```js
+{
+    "user": user, // user object
+    "datetime": "2017-10-09 19:03:02",
+    "content": "Bonjour\r\nNous vous remercions pour avoir partager votre avis. Revenez vite !"
+}
+```
+
+This object represent the [`review`](#review) answer, posted online by one of the dealership user. 
+
+Key | Type | Description
+----|------|-------------
+`user` | string | The [`user`](#user) who answered.
+`datetime` | string | The date and time of the answer.
+`content` | string | The content of the answer.
+
+## Bridge
+
+```json
+{
+    "title": "i'Car Systems",
+    "code": "icar",
+    "params": {
+        "code_dealer": "1268"
+    }
+}
+```
+
+This object represent the [dealership](#dealership) automatic importation configuration.
+
+Key | Type | Description
+----------|------|-------------
+`title` | string | Title of the connected software.
+`code` | string | Code of the connected software.
+`params` | object | The configured parameters for the software connexion. Each configuration object is different.
+
+## Communication
+
+```json
+{
+    "type": "email",
+    "status": "wait",
+    "datetime": "2017-10-27 15:03:00"
+}
+```
+
+This object represent an SMS or an Email planned to be send to a [`contact`](#contact).
+
+Key | Type | Description
+----|------|-------------
+`type` | string | `sms` or `email`.
+`status` | string | The actual status of the communication sending.
+`datetime` | string | The date and time of the `communication` sending.
+
+The `status` parameter can have multiple values :
+
+Status | Description
+-------|-------------
+`wait` | The communication has not been send yet.
+`canceled` | The communication won't be send because the contact created a review.
+`sent` | The communication has been sent.
+`clicked` | The contact clicked on the communication.
+`unsubscribe` | The contact requested to not receive any other communication from FIDCAR.
+
+## User
+
+```json
+{
+    "firstname": "Thibault",
+    "lastname": "Henry",
+    "email": "thibault@fidcar.com",
+    "phone": "0672391759"
+}
+```
+
+This object represent the [`contact`](#contact) personnal informations. The contact can edit those informations.
+
+Key | Type | Description
+----|------|-------------
+`firstname` | string | The contact firstname.
+`lastname` | string | The contact lastname.
+`email` | string | The contact email address.
+`phone` | string | The contact phone number.
