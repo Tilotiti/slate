@@ -43,7 +43,7 @@ You must replace <code>api_key</code> with your personal API key.
 
 # Pagination
 
-All ressources havesupport for bulk fetches via "list" API methods. For instance, you can [list dealerships](#list-all-the-dealerships). These list API methods share a common structure, taking at least these two parameters : `page` and `limit`.
+All ressources have support for bulk fetches via "list" API methods. For instance, you can [list dealerships](#list-all-the-dealerships). These list API methods share a common structure, taking at least these two parameters : `page` and `limit`.
 
 ## Query Parameters
 
