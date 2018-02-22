@@ -106,6 +106,10 @@ Key | Description
     "grade": "9.40",
     "url": "https://www.fidcar.dev/app_dev.php/fr/local/1325/garage-automobile-du-nord",
     "reviews": 231,
+    "brands": [
+        "BMW",
+        "Mini"
+    ],
     "social": {
         "facebook": "6.70",
         "google": "7.90",
@@ -130,6 +134,7 @@ Key | Type | Description
 `phone` | string | The nationaly formatted dealership phone number.
 `url` | string | The dealership website URL
 `reviews` | integer | The number of customer reviews of the dealership
+`brands` | array | The brand's names
 `social` | object | The social media grades.
 `bridge` | object | The dealership [Bridge object](#bridge) (optional)
 
@@ -201,7 +206,11 @@ The API answer with the [`local` object](#dealership) asked.
     ],
     "brand": 'Volvo',
     "model": 'XC 60',
-    "seller": 'Quentin Porcet'
+    "seller": 'Quentin Porcet',
+    "immat": "AZ-232-DZ",
+    "vin": "ABC4513321K05ZDHA",
+    "km": 239143,
+    "mec": "2015-10-01"
 }
 ```
 
@@ -218,6 +227,11 @@ Key | Type | Description
 `brand` | string | The brand of his car (optional).
 `model` | string | The model of his car (optional).
 `seller` | string | The name of his seller (optional)
+`immat` | string | The vehicule immatriculation number (optional)
+`vin` | string | The VIN number / Serial Number (optional)
+`km` | string | The mileage (optional)
+`mec` | string | The date of first circulation (optional - Y-m-d)
+
 
 The differents services are :
 
@@ -229,6 +243,41 @@ sav | After sales service
 rent | Rent service
 
 ## List the contact
+
+You can list and filter all your `contact` objects.
+
+```shell
+curl "https://www.fidcar.com/api/contact?page=1&limit=5"
+  -H "Authorization: [api_key]"
+```
+
+> Make sure to replace `[api_key]` with your API key and `[local_id]` with the dealership unique identifier.
+
+### HTTP Request
+
+`GET https://www.fidcar.com/api/contact`
+
+### Query Parameters
+
+Parameter | Default | Description
+----------|---------|-------------
+`page` | 1 | The cursor used in the pagination (optional).
+`limit` | 10 | A limit on the number of `contact` object to be returned, between 1 and 100 (optional).
+`name` | | Filter by the contact fullname (optional).
+`firstname` | | Filter by the contact `user` firstname (optional).
+`lastname` | | Filter by the contact `user` lastname (optional).
+`email` | | Filter by the contact `user` email (optional).
+`phone` | | Filter by the contact `user` phone (optional).
+`start` | | Filter by the date of purchase after `start` (YYYY-MM-DD) (optional).
+`end` | | Filter by the date of purchase before `end` (YYYY-MM-DD) (optional).
+`grade` | | Filter by the grade of the contact `review`. You can use an integer like `8` for filtering by all the `review` graded 8/10, filter with `>6` for filtering all the `review` graded strictely better than 6/10, or filter with `<7` for filtering all the `review` graded strictely worst than 7/10. (optional).
+`siret` | | Filter by the `local` siret (optional).
+
+### Response
+
+The API answer with a [`Pagination` object](#pagination) containing an array of [`contact` object](#contact) in `data`.
+
+## List the contact of a dealership
 
 You can list and filter all the `contact` objects assigned to one of your dealership.
 
@@ -268,7 +317,7 @@ The API answer with a [`Pagination` object](#pagination) containing an array of 
 
 ## Add a new contact
 
-You can add a new `contact` object to one of your dealership. This will trigger the FIDCAR processus by creating `communication` object as planning in the dealership configuration.
+You can add a new `contact` object to one of your dealership. This will trigger the FIDCAR processus by creating `communication` object as planning in the dealership configuration. You must fill either the contact's email or phone number.
 
 ```shell
 curl "https://www.fidcar.com/api/local/[local_id]/contact"
@@ -296,9 +345,16 @@ Parameter | Default | Description
 ----------|---------|-------------
 `firstname` | | The contact firstname.
 `lastname` | | Filter by the contact lastname.
-`email` | | The contact email.
+`email` | | The contact email (optional).
 `phone` | | The contact phone (optional).
 `service` | | The name of the service used by the contact (optional).
+`brand` | | The brand of his car (optional).
+`model` | | The model of his car (optional).
+`seller` | | The name of his seller (optional)
+`immat` | | The vehicule immatriculation number (optional)
+`vin` | | The VIN number / Serial Number (optional)
+`km` | | The mileage (optional)
+`mec` | | The date of first circulation (optional - Y-m-d)
 
 ### Response
 
@@ -354,10 +410,6 @@ curl "https://www.fidcar.com/api/review?page=1&limit=5"
 
 `GET https://www.fidcar.com/api/review`
 
-<aside class="notice">
-You must replace <code>[local_id]</code> with the dealership unique identifier <code>id</code>.
-</aside>
-
 ### Query Parameters
 
 Parameter | Default | Description
@@ -383,7 +435,7 @@ curl "https://www.fidcar.com/api/review/[review_id]"
 
 > Make sure to replace `[api_key]` with your API key and `[review_id]` by the review unique identifier.
 
-`GET https://www.fidcar.com/api/local/[local_id]`
+`GET https://www.fidcar.com/api/review/[review_id]`
 
 <aside class="notice">
 You must replace <code>[review_id]</code> with the review unique identifier <code>id</code>.
