@@ -309,7 +309,7 @@ Parameter | Default | Description
 `phone` | | Filter by the contact `user` phone (optional).
 `start` | | Filter by the date of purchase after `start` (YYYY-MM-DD) (optional).
 `end` | | Filter by the date of purchase before `end` (YYYY-MM-DD) (optional).
-`grade` | | Filter by the grade of the contact `review`. You can use an integer like `8` for filtering by all the `review` graded 8/10, filter with `>6` for filtering all the `review` graded strictely better than 6/10, or filter with `<7` for filtering all the `review` graded strictely worst than 7/10. (optional). 
+`grade` | | Filter by the grade of the contact `review`. You can use an integer like `8` for filtering by all the `review` graded 8/10, filter with `>6` for filtering all the `review` graded strictely better than 6/10, filter with `<7` for filtering all the `review` graded strictely worst than 7/10 or filter with `all` for having only the contacts with a review. (optional).
 
 ### Response
 
