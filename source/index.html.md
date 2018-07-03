@@ -366,10 +366,11 @@ The API answer with the new [`contact`](#contact) object created.
 {
     "id": "d57c6ec6-4ebd-4a01-a6fd-9771638424c9",
     "user": user, // Object user
+    "contact": contact, // Object contact
     "datetime": "2017-10-10 18:00:30",
     "service": "sav",
     "grade": 10,
-    "comment": "Personel agréable et compétent",
+    "comment": "Personnel agréable et compétent",
     "survey": {
         "Accueil": 10,
         "Explications": 10,
@@ -387,6 +388,7 @@ Key | Type | Description
 ----------|------|-------------
 `id` | string | Review Unique Identifier.
 `user` | object | The [`user`](#user) object who posted the review.
+`contact` | object | The [`contact`](#contact) object (without the [`user`](#user) parameter).
 `datetime` | string | The date and time of the review.
 `service` | string | The code of the service used by the contact.
 `grade` | int | The grade of the review (from 1 to 10).
