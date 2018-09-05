@@ -419,6 +419,8 @@ Parameter | Default | Description
 `page` | 1 | The cursor used in the pagination (optional)
 `limit` | 10 | A limit on the number of `review` object to be returned, between 1 and 100 (optional)
 `local` | | Filter by the the `local` unique identifier (optional).
+`start` | | Filter by the date of `review` after `start` (YYYY-MM-DD) (optional).
+`end` | | Filter by the date of `review` before `end` (YYYY-MM-DD) (optional).
 
 ### Response
 
