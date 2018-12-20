@@ -124,6 +124,7 @@ This object represent a dealership assigned to your account.
 Key | Type | Description
 ----------|------|-------------
 `id` | integer | Unique identifier for the object.
+`code` | string | Internal dealership indentifier.
 `publicKey` | string | The dealership public key. Used to call the widget.
 `title` | string | The dealership title.
 `street` | string | The dealership street name in the postal Adresse
@@ -160,6 +161,7 @@ Parameter | Default | Description
 `page` | 1 | The cursor used in the pagination (optional)
 `limit` | 10 | A limit on the number of `local` object to be returned, between 1 and 100 (optional)
 `siret` | | Filter by the SIRET number of the dealership (optional)
+`code` | | Filter by the internal code of the dealership (optional)
 `bridge` | | Filter by the `code` parameter of the dealership [`bridge` object](#bridge) (optional).
 
 ### Response
@@ -195,6 +197,7 @@ The API answer with the [`local` object](#dealership) asked.
 {
     "id": "d57c6ec6-4ebd-4a01-a6fd-9771638424c9",
     "user": user, // Object user
+    "pro": false,
     "service": "sav",
     "datetime": "2017-10-10 18:00:30",
     "review": review, // Object review
@@ -220,6 +223,7 @@ Key | Type | Description
 ----------|------|-------------
 `id` | string | Contact Unique Identifier
 `user` | object | The contact personal information, an [`user`](#user) object
+`pro` | bool | Is the contact a professionnal ? (`false` by default)
 `service` | string | The code of the service used by the contact (optional).
 `datetime` | string | The date and time of the purchase in the dealership or the creation of the contact.
 `review` | string | The review writed by the contact about your dealership, an [`review`](#review) object (optional).
