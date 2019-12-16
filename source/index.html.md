@@ -283,7 +283,9 @@ Key | Type | Description
 `pro` | bool | Is the contact a professionnal ? (`false` by default)
 `service` | string | The code of the service used by the contact (optional).
 `datetime` | string | The date and time of the purchase in the dealership or the creation of the contact.
-`review` | string | The review writed by the contact about your dealership, an [`review`](#review) object (optional).
+`review` | string | The review writed by the contact
+                                                  
+ct about your dealership, an [`review`](#review) object (optional).
 `communication` | array | An array of [`communication`](#communication) object.
 `seller` | string | The name of his seller (optional)
 `type` | string | Type of it vehicle (`auto` or `moto`, optional).
@@ -532,6 +534,66 @@ You must replace <code>[review_id]</code> with the review unique identifier <cod
 ### Response
 
 The API answer with the [`review` object](#review) asked. 
+
+## Reply to a review
+
+Reply to one of your review.
+
+### HTTP Request
+
+```shell
+curl "https://www.fidcar.com/api/review/[review_id]/answer"
+  -H "Authorization: [api_key]"
+  -F content="Your answer."
+```
+
+> Make sure to replace `[api_key]` with your API key and `[review_id]` by the review unique identifier.
+
+`POST https://www.fidcar.com/api/review/[review_id]/answer`
+
+<aside class="notice">
+You must replace <code>[review_id]</code> with the review unique identifier <code>id</code>.
+</aside>
+
+### Query Parameters
+
+Parameter | Default | Description
+----------|---------|-------------
+`content` | | The text of your answer.
+
+### Response
+
+The API answer with the [`review` object](#review). 
+
+## Report a review
+
+Report a review to ask the support to check if it fits our guidelines.
+
+### HTTP Request
+
+```shell
+curl "https://www.fidcar.com/api/review/[review_id]/report"
+  -H "Authorization: [api_key]"
+  -F message="The review is problematic"
+```
+
+> Make sure to replace `[api_key]` with your API key and `[review_id]` by the review unique identifier.
+
+`POST https://www.fidcar.com/api/review/[review_id]/report`
+
+<aside class="notice">
+You must replace <code>[review_id]</code> with the review unique identifier <code>id</code>.
+</aside>
+
+### Query Parameters
+
+Parameter | Default | Description
+----------|---------|-------------
+`message` | | The justification of your report.
+
+### Response
+
+The API answer with the [`review` object](#review). 
 
 # Lead
 
